@@ -1341,6 +1341,7 @@ inline = choice [ whitespace
                 , endline
                 , code
                 , fours
+                , smallcaps
                 , strong
                 , emph
                 , note
@@ -1487,6 +1488,12 @@ emph = fmap B.emph <$> nested
               pos <- getPosition
               lastStrPos <- stateLastStrPos <$> getState
               guard $ lastStrPos /= Just pos
+
+smallcaps :: MarkdownParser (F Inlines)
+smallcaps = fmap B.smallcaps <$> nested
+  (inlinesBetween pipeStart pipeEnd)
+    where pipeStart = string "||" >> lookAhead nonspaceChar
+          pipeEnd   = try $ string "||"
 
 strong :: MarkdownParser (F Inlines)
 strong = fmap B.strong <$> nested
